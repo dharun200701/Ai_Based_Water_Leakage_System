@@ -1,0 +1,829 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        HydroWatch | Dashboard
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
+
+</head>
+
+
+<body>
+
+<div class="app-container">
+
+
+    <!-- ======================================
+         SIDEBAR
+         ====================================== -->
+
+    <aside class="sidebar">
+
+        <div class="sidebar-brand">
+
+            <div class="brand-icon">
+                +
+            </div>
+
+            <div>
+
+                <div class="brand-name">
+                    HydroWatch
+                </div>
+
+                <div class="brand-mini">
+                    WATER INTELLIGENCE
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <nav class="navigation">
+
+            <a
+                href="#dashboard"
+                class="nav-item active"
+            >
+
+                <span class="nav-icon">
+                    ▦
+                </span>
+
+                Dashboard
+
+            </a>
+
+
+            <a
+                href="#prediction"
+                class="nav-item"
+            >
+
+                <span class="nav-icon">
+                    ◉
+                </span>
+
+                Leak Detection
+
+            </a>
+
+
+            <a
+                href="#alerts"
+                class="nav-item"
+            >
+
+                <span class="nav-icon">
+                    🔔
+                </span>
+
+                Alerts
+
+            </a>
+
+
+            <a
+                href="#data"
+                class="nav-item"
+            >
+
+                <span class="nav-icon">
+                    ◫
+                </span>
+
+                Network Data
+
+            </a>
+
+        </nav>
+
+
+        <div class="sidebar-bottom">
+
+            <div class="system-status">
+
+                <span class="status-dot"></span>
+
+                System Online
+
+            </div>
+
+            <div class="model-info">
+
+                Random Forest ML
+
+                <span>
+                    v1.0
+                </span>
+
+            </div>
+
+        </div>
+
+    </aside>
+
+
+    <!-- ======================================
+         MAIN
+         ====================================== -->
+
+    <main class="main-content">
+
+
+        <!-- TOP BAR -->
+
+        <header class="topbar">
+
+            <div>
+
+                <p class="page-label">
+                    OPERATIONS CENTER
+                </p>
+
+                <h1>
+                    Water Network Dashboard
+                </h1>
+
+            </div>
+
+
+            <div class="topbar-right">
+
+                <div class="live-status">
+
+                    <span class="status-dot"></span>
+
+                    Live monitoring
+
+                </div>
+
+
+                <div class="user-profile">
+
+                    <div class="user-avatar">
+                        {{ user_name[0]|upper }}
+                    </div>
+
+                    <div class="user-details">
+
+                        <strong>
+                            {{ user_name }}
+                        </strong>
+
+                        <span>
+                            {{ user_email }}
+                        </span>
+
+                    </div>
+
+                    <a
+                        href="{{ url_for('logout') }}"
+                        class="logout-button"
+                    >
+                        Logout
+                    </a>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- ======================================
+             OVERVIEW CARDS
+             ====================================== -->
+
+        <section
+            id="dashboard"
+            class="overview-grid"
+        >
+
+            <div class="stat-card">
+
+                <div class="stat-icon blue">
+                    ◫
+                </div>
+
+                <div>
+
+                    <span class="stat-label">
+                        Total Records
+                    </span>
+
+                    <strong
+                        id="total-records"
+                        class="stat-value"
+                    >
+                        --
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-icon red">
+                    ⚠
+                </div>
+
+                <div>
+
+                    <span class="stat-label">
+                        Leak Cases
+                    </span>
+
+                    <strong
+                        id="leak-count"
+                        class="stat-value"
+                    >
+                        --
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-icon green">
+                    ✓
+                </div>
+
+                <div>
+
+                    <span class="stat-label">
+                        Normal Cases
+                    </span>
+
+                    <strong
+                        id="normal-count"
+                        class="stat-value"
+                    >
+                        --
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-icon orange">
+                    %
+                </div>
+
+                <div>
+
+                    <span class="stat-label">
+                        Leak Rate
+                    </span>
+
+                    <strong
+                        id="leak-rate"
+                        class="stat-value"
+                    >
+                        --
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ======================================
+             PREDICTION SECTION
+             ====================================== -->
+
+        <section
+            id="prediction"
+            class="dashboard-grid"
+        >
+
+
+            <!-- SENSOR INPUT -->
+
+            <div class="panel prediction-panel">
+
+                <div class="panel-header">
+
+                    <div>
+
+                        <p class="panel-kicker">
+                            MACHINE LEARNING
+                        </p>
+
+                        <h2>
+                            Leakage Prediction
+                        </h2>
+
+                    </div>
+
+                    <span class="model-badge">
+                        Random Forest
+                    </span>
+
+                </div>
+
+
+                <p class="panel-description">
+
+                    Enter the current pipeline sensor
+                    readings. The ML model will estimate
+                    the probability of water leakage.
+
+                </p>
+
+
+                <form
+                    id="prediction-form"
+                    class="sensor-form"
+                >
+
+
+                    <!-- Pressure -->
+
+                    <div class="sensor-input">
+
+                        <label for="pressure">
+
+                            Pressure
+
+                            <span>
+                                PSI
+                            </span>
+
+                        </label>
+
+                        <input
+                            type="number"
+                            id="pressure"
+                            name="pressure"
+                            placeholder="e.g. 35"
+                            min="0"
+                            max="200"
+                            step="0.01"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- Flow -->
+
+                    <div class="sensor-input">
+
+                        <label for="flow">
+
+                            Flow Rate
+
+                            <span>
+                                L/min
+                            </span>
+
+                        </label>
+
+                        <input
+                            type="number"
+                            id="flow"
+                            name="flow"
+                            placeholder="e.g. 25"
+                            min="0"
+                            max="500"
+                            step="0.01"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- Temperature -->
+
+                    <div class="sensor-input">
+
+                        <label for="temperature">
+
+                            Temperature
+
+                            <span>
+                                °C
+                            </span>
+
+                        </label>
+
+                        <input
+                            type="number"
+                            id="temperature"
+                            name="temperature"
+                            placeholder="e.g. 25"
+                            min="-50"
+                            max="150"
+                            step="0.01"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- Vibration -->
+
+                    <div class="sensor-input">
+
+                        <label for="vibration">
+
+                            Vibration
+
+                            <span>
+                                mm/s
+                            </span>
+
+                        </label>
+
+                        <input
+                            type="number"
+                            id="vibration"
+                            name="vibration"
+                            placeholder="e.g. 1.2"
+                            min="0"
+                            max="20"
+                            step="0.001"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- RPM -->
+
+                    <div class="sensor-input">
+
+                        <label for="rpm">
+
+                            Pump RPM
+
+                            <span>
+                                RPM
+                            </span>
+
+                        </label>
+
+                        <input
+                            type="number"
+                            id="rpm"
+                            name="rpm"
+                            placeholder="e.g. 1450"
+                            min="0"
+                            max="5000"
+                            step="1"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- Hours -->
+
+                    <div class="sensor-input">
+
+                        <label for="hours">
+
+                            Operational Hours
+
+                            <span>
+                                Hours
+                            </span>
+
+                        </label>
+
+                        <input
+                            type="number"
+                            id="hours"
+                            name="hours"
+                            placeholder="e.g. 5000"
+                            min="0"
+                            max="100000"
+                            step="0.1"
+                            required
+                        >
+
+                    </div>
+
+
+                    <button
+                        type="submit"
+                        id="predict-button"
+                        class="predict-button"
+                    >
+
+                        <span id="predict-text">
+                            Run Leakage Check
+                        </span>
+
+                        <span id="predict-loader"
+                              class="loader hidden">
+                        </span>
+
+                        <span>
+                            →
+                        </span>
+
+                    </button>
+
+                </form>
+
+            </div>
+
+
+            <!-- ==================================
+                 RESULT
+                 ================================== -->
+
+            <div
+                id="alerts"
+                class="panel result-panel"
+            >
+
+                <div class="panel-header">
+
+                    <div>
+
+                        <p class="panel-kicker">
+                            DETECTION RESULT
+                        </p>
+
+                        <h2>
+                            Current Status
+                        </h2>
+
+                    </div>
+
+                    <span
+                        id="result-time"
+                        class="result-time"
+                    >
+                        --
+                    </span>
+
+                </div>
+
+
+                <div
+                    id="result"
+                    class="result neutral"
+                >
+
+                    <div class="result-icon">
+                        ?
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            Awaiting sensor values
+                        </strong>
+
+                        <small>
+                            Run a leakage check to
+                            generate a prediction.
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Probability -->
+
+                <div class="probability-section">
+
+                    <div class="probability-header">
+
+                        <span>
+                            Leak Probability
+                        </span>
+
+                        <strong id="probability">
+                            0%
+                        </strong>
+
+                    </div>
+
+                    <div class="progress-bar">
+
+                        <div
+                            id="probability-fill"
+                            class="progress-fill"
+                            style="width: 0%"
+                        >
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Notification -->
+
+                <div
+                    id="notification-box"
+                    class="notification-box"
+                >
+
+                    <div class="notification-header">
+
+                        <span class="notification-icon">
+                            🔔
+                        </span>
+
+                        <div>
+
+                            <strong>
+                                Notification Message
+                            </strong>
+
+                            <small>
+                                Automatic alert system
+                            </small>
+
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        id="notification-message"
+                        class="notification-message"
+                    >
+
+                        Run a leakage check to generate
+                        an automatic notification.
+
+                    </div>
+
+
+                    <div
+                        id="notification-status"
+                        class="notification-status"
+                    >
+
+                        Leak alerts will be sent to:
+
+                        <strong>
+                            {{ user_email }}
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ======================================
+             NETWORK DATA
+             ====================================== -->
+
+        <section
+            id="data"
+            class="panel data-panel"
+        >
+
+            <div class="panel-header">
+
+                <div>
+
+                    <p class="panel-kicker">
+                        NETWORK OVERVIEW
+                    </p>
+
+                    <h2>
+                        Recent Leakage Cases
+                    </h2>
+
+                </div>
+
+                <button
+                    id="refresh-data"
+                    class="secondary-button"
+                >
+                    ↻ Refresh
+                </button>
+
+            </div>
+
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Location
+                            </th>
+
+                            <th>
+                                Zone
+                            </th>
+
+                            <th>
+                                Block
+                            </th>
+
+                            <th>
+                                Pipe
+                            </th>
+
+                            <th>
+                                Pressure
+                            </th>
+
+                            <th>
+                                Flow Rate
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="leak-table-body">
+
+                        <tr>
+
+                            <td
+                                colspan="7"
+                                class="table-loading"
+                            >
+                                Loading network data...
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+
+        <!-- ======================================
+             FOOTER
+             ====================================== -->
+
+        <footer class="dashboard-footer">
+
+            <span>
+                HydroWatch Water Leakage Detection System
+            </span>
+
+            <span>
+                Random Forest ML • Automatic Email Alerts
+            </span>
+
+        </footer>
+
+
+    </main>
+
+</div>
+
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+
+</body>
+
+</html>

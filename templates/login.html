@@ -1,0 +1,237 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>HydroWatch | Login</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
+</head>
+
+<body class="login-page">
+
+    <main class="auth-card">
+
+        <!-- Logo -->
+        <div class="auth-brand">
+            <div class="brand-icon">+</div>
+
+            <div>
+                <div class="brand-name">
+                    HydroWatch
+                </div>
+
+                <div class="brand-subtitle">
+                    WATER NETWORK INTELLIGENCE
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Heading -->
+        <div class="auth-heading">
+
+            <p class="eyebrow">
+                WATER LEAKAGE MONITORING
+            </p>
+
+            <h1>
+                Welcome back
+            </h1>
+
+            <p>
+                Sign in to monitor your water network
+                and receive automatic leakage alerts.
+            </p>
+
+        </div>
+
+
+        <!-- Success message -->
+        {% if registered %}
+
+        <div class="alert-message success">
+
+            <span>✓</span>
+
+            <div>
+                Account created successfully.
+                You can now sign in.
+            </div>
+
+        </div>
+
+        {% endif %}
+
+
+        <!-- Error message -->
+        {% if error %}
+
+        <div class="alert-message error">
+
+            <span>!</span>
+
+            <div>
+                {{ error }}
+            </div>
+
+        </div>
+
+        {% endif %}
+
+
+        <!-- Login Form -->
+        <form
+            method="POST"
+            action="{{ url_for('login') }}"
+            class="auth-form"
+        >
+
+            <div class="form-group">
+
+                <label for="email">
+                    Email address
+                </label>
+
+                <div class="input-wrapper">
+
+                    <span class="input-icon">
+                        ✉
+                    </span>
+
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="you@example.com"
+                        value="{{ email or '' }}"
+                        required
+                        autocomplete="email"
+                    >
+
+                </div>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="password">
+                    Password
+                </label>
+
+                <div class="input-wrapper">
+
+                    <span class="input-icon">
+                        🔒
+                    </span>
+
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="Enter your password"
+                        required
+                        autocomplete="current-password"
+                    >
+
+                    <button
+                        type="button"
+                        class="password-toggle"
+                        onclick="togglePassword('password', this)"
+                    >
+                        Show
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <button
+                type="submit"
+                class="primary-button"
+            >
+
+                <span>
+                    Sign in
+                </span>
+
+                <span class="button-arrow">
+                    →
+                </span>
+
+            </button>
+
+        </form>
+
+
+        <!-- Register -->
+        <div class="auth-footer">
+
+            <span>
+                Don't have an account?
+            </span>
+
+            <a href="{{ url_for('register') }}">
+                Create an account
+            </a>
+
+        </div>
+
+
+        <!-- Security -->
+        <div class="security-note">
+
+            <span>🔐</span>
+
+            <span>
+                Your account is protected with
+                secure password hashing.
+            </span>
+
+        </div>
+
+    </main>
+
+
+    <script>
+
+        function togglePassword(
+            inputId,
+            button
+        ) {
+
+            const input =
+                document.getElementById(inputId);
+
+            if (input.type === "password") {
+
+                input.type = "text";
+
+                button.textContent = "Hide";
+
+            } else {
+
+                input.type = "password";
+
+                button.textContent = "Show";
+            }
+        }
+
+    </script>
+
+</body>
+
+</html>
+
