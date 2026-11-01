@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <title>HydroWatch | {{ title|default('Water network intelligence') }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css', v=2) }}">
+  <script src="{{ url_for('static', filename='script.js') }}" defer></script>
+</head>
+<body class="workspace">
+  <div class="workspace-shell">
+    <aside class="workspace-sidebar">
+      <a class="workspace-brand" href="{{ url_for('home') }}">
+        <span class="brand-mark">H</span>
+        <span><strong>HydroWatch</strong><small>WATER NETWORK INTELLIGENCE</small></span>
+      </a>
+      <nav class="workspace-nav" aria-label="Main navigation">
+        <a href="{{ url_for('home') }}">Dashboard</a>
+        <a href="{{ url_for('home') }}#analysis">AI Leak Detection</a>
+        <a href="{{ url_for('civil') }}">Civil Pipeline Assessment</a>
+        <a href="{{ url_for('civil') }}#network">Network &amp; Junctions</a>
+        <a href="{{ url_for('history') }}">Analysis History</a>
+        <a href="{{ url_for('alerts') }}">Email Alerts</a>
+        <a href="{{ url_for('model_page') }}">Dataset &amp; Model</a>
+        <a href="{{ url_for('settings') }}">Settings</a>
+        <a href="{{ url_for('help_page') }}">Help &amp; Assumptions</a>
+      </nav>
+      <div class="sidebar-note">
+        <span class="mode-dot"></span>
+        Manual / demo analysis
+        <small>No physical sensors connected</small>
+      </div>
+    </aside>
+    <main class="workspace-main">
+      <header class="workspace-topbar">
+        <div>
+          <p class="eyebrow">HYDROWATCH OPERATIONS</p>
+          <h1>{{ heading|default(title|default('Water network overview')) }}</h1>
+        </div>
+        <div class="account">
+          <span class="avatar">{{ user.name[0]|upper }}</span>
+          <span><strong>{{ user.name }}</strong><small>{{ user.email }}</small></span>
+          <form method="post" action="{{ url_for('logout') }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button class="button button-quiet" type="submit">Sign out</button>
+          </form>
+        </div>
+      </header>
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}<div class="flash-stack">{% for category, message in messages %}
+          <p class="flash {{ category }}">{{ message }}</p>
+        {% endfor %}</div>{% endif %}
+      {% endwith %}
+      {% block content %}{% endblock %}
+      <footer class="workspace-footer">Predictions are decision support only. Verify potential leaks in the field.</footer>
+    </main>
+  </div>
+</body>
+</html>

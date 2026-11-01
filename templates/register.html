@@ -15,7 +15,7 @@
 
     <link
         rel="stylesheet"
-        href="{{ url_for('static', filename='style.css') }}"
+        href="{{ url_for('static', filename='style.css', v=2) }}"
     >
 
 </head>
@@ -89,6 +89,7 @@
             class="auth-form"
             onsubmit="return validateRegistration()"
         >
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
             <!-- Name -->
             <div class="form-group">
@@ -167,9 +168,9 @@
                         type="password"
                         id="register-password"
                         name="password"
-                        placeholder="At least 6 characters"
+                        placeholder="At least 8 characters"
                         required
-                        minlength="6"
+                        minlength="8"
                         autocomplete="new-password"
                     >
 
@@ -208,7 +209,7 @@
                         name="confirm_password"
                         placeholder="Repeat your password"
                         required
-                        minlength="6"
+                        minlength="8"
                         autocomplete="new-password"
                     >
 

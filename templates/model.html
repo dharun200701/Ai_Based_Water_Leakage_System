@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+{% set title = "Dataset & Model" %}
+{% block content %}
+<section class="welcome-banner"><div><p class="eyebrow">TRAINING DATA IS NOT LIVE DATA</p><h2>Dataset and model evaluation</h2><p>All dataset statistics below describe the supplied training CSV and holdout evaluation only.</p></div><span class="mode-pill">Random Forest · Seed 42</span></section>
+{% if model_error %}<div class="notice notice-error">{{ model_error }}</div>{% endif %}
+{% if evaluation %}
+<section class="stat-grid">
+  <article class="stat-card"><span>Training file</span><strong class="small-value">{{ evaluation.dataset_filename }}</strong></article>
+  <article class="stat-card"><span>Usable / source rows</span><strong>{{ evaluation.usable_rows }} / {{ evaluation.source_rows }}</strong></article>
+  <article class="stat-card"><span>Train / test split</span><strong>{{ evaluation.train_rows }} / {{ evaluation.test_rows }}</strong></article>
+  <article class="stat-card"><span>Features</span><strong>{{ evaluation.features|length }}</strong></article>
+</section>
+<section class="content-grid">
+  <article class="panel"><div class="section-title"><h2>Holdout evaluation</h2></div>
+    <div class="metric-grid">{% for key in ["accuracy", "precision", "recall", "f1", "roc_auc"] %}
+      <div><span>{{ key|upper }}</span><strong>{{ "%.3f"|format(evaluation.metrics[key]) }}</strong></div>{% endfor %}</div>
+    <h3>Confusion matrix</h3><p class="muted">Rows: actual [normal, leak]; columns: predicted [normal, leak]</p>
+    <pre class="matrix">{{ evaluation.metrics.confusion_matrix|tojson(indent=2) }}</pre>
+  </article>
+  <article class="panel"><div class="section-title"><h2>Dataset checks</h2></div>
+    <p><strong>Target:</strong> {{ evaluation.target }}</p><p><strong>Class distribution:</strong> {{ evaluation.class_distribution }}</p>
+    <h3>Model features (input order)</h3><ol class="plain-list">{% for feature in evaluation.features %}<li>{{ feature }}</li>{% endfor %}</ol>
+    <h3>Missing values in source columns</h3><ul class="plain-list">{% for column, count in evaluation.missing_values.items() %}<li>{{ column }} <strong>{{ count }}</strong></li>{% endfor %}</ul>
+  </article>
+</section>
+<section class="panel"><h2>Model limitations</h2><ul class="plain-list">{% for limitation in evaluation.limitations %}<li>{{ limitation }}</li>{% endfor %}</ul></section>
+{% endif %}
+<section class="panel"><div class="section-title"><h2>Civil dataset inspection</h2></div>
+  {% if civil_summary %}{% if civil_summary.error %}<p>{{ civil_summary.error }}</p>{% else %}<p><strong>{{ civil_summary.filename }}</strong>: {{ civil_summary.rows }} rows. Available fields are inspected from the real file; they are not treated as live pipeline readings.</p><p class="muted">{{ civil_summary.columns|join(", ") }}</p>{% endif %}
+  {% else %}<p class="muted">civil_data.csv was not found.</p>{% endif %}
+</section>
+{% endblock %}

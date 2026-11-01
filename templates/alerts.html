@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+{% set title = "Email Alerts" %}
+{% block content %}
+<section class="welcome-banner"><div><p class="eyebrow">DELIVERY HISTORY</p><h2>Email alerts</h2><p>Leak alerts are sent only to your registered account email: <strong>{{ user.email }}</strong>. Failed deliveries remain recorded and may be retried.</p></div>
+  <span class="mode-pill">{{ "SMTP configured" if config_ready else "Email alerts not configured" }}</span></section>
+{% if config_error %}<div class="notice notice-error">{{ config_error }}</div>
+{% else %}<div class="notice notice-success">SMTP settings are loaded. New leak alerts will use the configured SMTP transport; previous failed alerts are not resent automatically.</div>{% endif %}
+<section class="panel"><div class="section-title"><div><h2>Test email configuration</h2><p class="muted">Sends only to {{ user.email }} and is limited to one attempt per minute.</p></div>
+  <form method="post" action="{{ url_for('test_email') }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="button button-secondary" type="submit">Send test email</button></form></div></section>
+<section class="panel">
+  {% if alerts %}<div class="table-scroll"><table><thead><tr><th>Alert / analysis</th><th>Alert timestamp</th><th>Recipient</th><th>Status</th><th>Message</th><th>Action</th></tr></thead><tbody>
+    {% for alert in alerts %}<tr><td>#{{ alert.id }} / #{{ alert.analysis_id }}</td><td>{{ alert.created_at }}<small>Analysis: {{ alert.analysis_time }}</small></td><td>{{ alert.recipient }}</td><td><span class="status-chip {{ alert.status }}">{{ alert.status|title }}</span><small>{{ alert.attempts }} attempt(s)</small></td><td>{{ alert.status_message }}</td>
+    <td>{% if alert.status == "failed" %}<form method="post" action="{{ url_for('retry_alert', alert_id=alert.id) }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="button button-secondary" type="submit">Retry</button></form>{% else %}—{% endif %}</td></tr>{% endfor %}
+  </tbody></table></div>{% else %}<div class="empty-state"><strong>No alerts yet</strong><p>A saved leak prediction creates an alert record. Email delivery requires SMTP configuration.</p></div>{% endif %}
+</section>
+{% endblock %}

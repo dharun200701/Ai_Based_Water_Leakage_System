@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+{% set title = "Help & Engineering Assumptions" %}
+{% block content %}
+<section class="panel prose">
+  <p class="eyebrow">PROJECT OVERVIEW</p><h2>HydroWatch — engineering decision support</h2>
+  <p><strong>AI contribution:</strong> a Random Forest classifier learns from the provided labeled CSV and returns a prediction for six manually entered readings. Evaluation metrics come from a reproducible stratified holdout split; they do not prove field accuracy.</p>
+  <p><strong>Civil contribution:</strong> network connectivity checks and preliminary pipe-by-pipe hydraulic estimates based on Darcy–Weisbach. The calculations use SI units internally, water properties approximated at 20 °C, and explicit supplied flow values.</p>
+  <h3>System architecture</h3>
+  <p>Browser forms submit validated values to Flask routes. The model service trains and evaluates against the configured CSV; analysis results and user-owned civil networks/assessments are stored in SQLite. Leak alerts are persisted before optional SMTP delivery. The browser only visualizes saved results returned by the authenticated application.</p>
+  <h3>Equations</h3>
+  <ul class="plain-list"><li>Area: A = πD² / 4</li><li>Mean velocity: v = Q / A</li><li>Reynolds number: Re = ρvD / μ</li><li>Friction loss: hᶠ = f(L/D)(v² / 2g)</li><li>Minor loss: hᵐ = K(v² / 2g)</li><li>Pressure/head relation: Δp = ρgΔh (requires suitable boundary and elevation data)</li></ul>
+  <h3>Assumptions and limitations</h3>  <ul class="plain-list"><li>Supplied pipe flows are not hydraulically solved. Flow-balance warnings are only a consistency check.</li><li>Friction factor uses laminar 64/Re, Swamee–Jain turbulent estimate, and linear interpolation through transition.</li><li>Hydraulic review flags are screening priorities only: velocity over 2.5 m/s or segment head loss over 1 m. They do not identify a leak.</li><li>No confirmed leak location is inferred from RPM or a junction label.</li><li>Manual readings, demo scenarios, and dataset-derived training examples are distinct sources.</li><li>Hardware integration is future work; no physical sensor or pump is connected.</li></ul>
+  <h3>Demonstration sequence</h3><ol><li>Sign in and load a normal demonstration scenario, then run an analysis.</li><li>Load the suspected-leak demo and inspect the saved result and alert status.</li><li>If SMTP is configured, verify delivery to the account email; otherwise see the recorded configuration status.</li><li>Open Civil Pipeline Assessment, load its illustrative network, calculate, and export the saved report as CSV.</li></ol>
+</section>
+{% endblock %}

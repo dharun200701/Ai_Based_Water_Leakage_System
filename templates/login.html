@@ -14,7 +14,7 @@
 
     <link
         rel="stylesheet"
-        href="{{ url_for('static', filename='style.css') }}"
+        href="{{ url_for('static', filename='style.css', v=2) }}"
     >
 </head>
 
@@ -96,6 +96,7 @@
             action="{{ url_for('login') }}"
             class="auth-form"
         >
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
             <div class="form-group">
 
@@ -234,4 +235,3 @@
 </body>
 
 </html>
-

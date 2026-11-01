@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+{% set title = "Analysis History" %}
+{% block content %}
+<section class="panel">
+  <div class="section-title"><div><p class="eyebrow">PRIVATE TO YOUR ACCOUNT</p><h2>Analysis history</h2></div></div>
+  {% if records %}
+  <div class="table-scroll"><table><thead><tr><th>ID / Time</th><th>Status</th><th>Source</th><th>Pressure</th><th>Flow</th><th>Temperature</th><th>Vibration</th><th>RPM</th><th>Hours</th><th>Model score</th></tr></thead><tbody>
+  {% for row in records %}{% set values = row.readings_json|from_json %}
+  <tr><td>#{{ row.id }}<small>{{ row.created_at }}</small></td><td>{{ "Leak suspected" if row.prediction else "Normal" }}</td><td>{{ row.source_mode|title }}</td><td>{{ values.pressure }} PSI</td><td>{{ values.flow }} L/min</td><td>{{ values.temperature }} °C</td><td>{{ values.vibration }} mm/s</td><td>{{ values.rpm }} RPM</td><td>{{ values.hours }} h</td><td>{{ "%.2f%%"|format(row.leak_score) if row.leak_score is not none else "Unavailable" }}</td></tr>
+  {% endfor %}</tbody></table></div>
+  {% else %}<div class="empty-state"><strong>No analyses yet</strong><p>Predictions you save will appear here.</p><a class="button button-primary" href="{{ url_for('home') }}#analysis">Start an analysis</a></div>{% endif %}
+</section>
+{% endblock %}
